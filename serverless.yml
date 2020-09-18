@@ -1,6 +1,6 @@
 service: asu-cic-ocr-api
 
-frameworkVersion: '>=1.65.0 <2.0.0'
+frameworkVersion: '>=1.65.0 <=2.1.1'
 
 custom:
   BUCKET: ${self:service}-${opt:stage, self:provider.stage}-documents
@@ -27,6 +27,15 @@ provider:
   runtime: nodejs12.x
   timeout: 30
   memorySize: 1024
+  endpointType: PRIVATE
+  vpcEndpointIds:
+      - ${env:VCPE_ID}
+  resourcePolicy:
+      - Effect: Allow
+        Principal: "*"
+        Action: execute-api:Invoke
+        Resource:
+          - execute-api:/*/*/*
 
   deploymentBucket:
     maxPreviousDeploymentArtifacts: 10
@@ -112,7 +121,7 @@ resources:
         LifecycleConfiguration:
           Rules:
             -
-              ExpirationInDays: 14
+              ExpirationInDays: 1
               Status: Enabled
 
     TextractSNSTopic:
