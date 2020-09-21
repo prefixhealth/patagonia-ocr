@@ -3,7 +3,7 @@ const uniqid = require('uniqid');
 
 const ApiError = require('./lib/ApiError');
 const authorize = require('./lib/authorizer');
-const { upload, store } = require('./lib/uploader');
+const { upload, store, deleteObject } = require('./lib/uploader');
 const { callTextractAsync, fetchAndStoreOutput, getStored } = require('./lib/textractCallerAsync');
 const callTextractSync = require('./lib/textractCallerSync');
 const mapTextractOutput = require('./lib/textractMapper');
@@ -99,6 +99,9 @@ module.exports.process = async (event) => {
       } else {
         // perform OCR on IMAGE file *sync execution
         extracted = await callTextractSync(object.key);
+        // delete the file
+        let deleteRes = await deleteObject(object.key);
+        console.log(deleteRes);
         normalized = await postExtraction(extracted, requestId, debug);
         metadata['Status'] = 'SUCCEEDED';
         response = [200, normalized];
