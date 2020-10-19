@@ -46,7 +46,7 @@ Response will have an HTTP status of **4xx** or **5xx** when an error was encoun
   No valid `x-api-key` header was provided in the POST request.
 
 
-- **404** _Unauthorized_
+- **404** _Not Found_
 
   No valid `requestId` was provided in the first path parameter of the GET request.
 

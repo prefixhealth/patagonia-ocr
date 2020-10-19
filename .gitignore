@@ -1,2 +1,6 @@
 .serverless
 node_modules
+.idea
+*.iws
+*.iml
+*.ipr

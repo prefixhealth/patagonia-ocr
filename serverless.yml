@@ -3,8 +3,8 @@ service: asu-cic-ocr-api
 frameworkVersion: '>=1.65.0 <=2.1.1'
 
 custom:
-  BUCKET: ${self:service}-${opt:stage, self:provider.stage}-documents
-  SNStopicName: ${self:service}-${opt:stage, self:provider.stage}-topic
+  BUCKET: ${self:service}-${env:REGION}-${opt:stage, self:provider.stage}-documents
+  SNStopicName: ${self:service}-${env:REGION}-${opt:stage, self:provider.stage}-topic
   SNStopicArn:
     Fn::Join:
       - ":"
@@ -12,8 +12,7 @@ custom:
         - Ref: "AWS::Region"
         - Ref: "AWS::AccountId"
         - ${self:custom.SNStopicName}
-
-  TextractRoleName: ${self:service}-${opt:stage, self:provider.stage}-textract-role
+  TextractRoleName: ${self:service}-${env:REGION}-${opt:stage, self:provider.stage}-textract-role
   TextractRoleArn:
     Fn::Join:
       - ":"
@@ -21,15 +20,32 @@ custom:
         - Ref: "AWS::AccountId"
         - "role/${self:custom.TextractRoleName}"
 
+  endpointType:
+    production:
+      PRIVATE
+    test:
+      EDGE
+    other:
+      EDGE
+
+  vpcEndpointIds:
+    production:
+      - ${env:VCPE_ID}
+    other:
+      - null
+
+  s3BucketDeletionPolicy:
+    production: Retain
+    other: Delete
+
 provider:
   name: aws
   region: ${env:REGION}
   runtime: nodejs12.x
   timeout: 30
   memorySize: 1024
-  endpointType: PRIVATE
-  vpcEndpointIds:
-      - ${env:VCPE_ID}
+  endpointType: ${self:custom.endpointType.${opt:stage}, self.endpointType.other}
+  vpcEndpointIds: ${self:custom.vpcEndpointIds.${opt:stage}, self.vpcEndpointIds.other}
   resourcePolicy:
       - Effect: Allow
         Principal: "*"
@@ -110,7 +126,7 @@ resources:
 
     DocumentsBucket:
       Type: AWS::S3::Bucket
-      DeletionPolicy: Retain
+      DeletionPolicy: ${self:custom.s3BucketDeletionPolicy.${opt:stage}, self.vpcEndpointIds.other}
       Properties:
         BucketName: ${self:custom.BUCKET}
         AccessControl: Private
@@ -191,4 +207,3 @@ functions:
           path: ocr/{requestId}
           method: get
           cors: true
-
