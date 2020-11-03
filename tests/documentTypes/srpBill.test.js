@@ -374,6 +374,142 @@ it('document ocr id 290', async () => {
   expect(processedDocument.extracted.account_number).toBe('123-456-789');
 });
 
+it('document ocr id 326', async () => {
+  const ocr = {
+    keyValues: {
+      'Energy ': '1,475 ',
+      'Meter # ': '5684647 ',
+      'Prior Read ': '27906 ',
+      'Energy Charge ': '$160.93 ',
+      'Type ': 'kWh ',
+      'Previous Balance ': '$180.47 ',
+      'County and State Tax ': '$11.40 ',
+      'Monthly Service Charge ': '$20.00 ',
+      'Current Read ': '29381 ',
+      'Phoenix City Tax ': '$4.89 ',
+      'Please Pay by ': 'Sep 30, 2020 ',
+      'PLEASE PAY ': '$196.69 ',
+      'Balance Before Charges ': '-$0.53 ',
+      'This Month\'s Charges ': '$197.22 ',
+      // eslint-disable-next-line no-dupe-keys
+      'Please Pay by ': 'Sep 30, 2020 ',
+      '8/18 Payment - Thank you ': '-$181.00 ',
+      'Apr ': '2018 ',
+    },
+    rawText: [
+      'PLEASE RE BTURN THIS PORTION WHEN MAILING YOUR PAYMEN/',
+      'Please Pay by',
+      'Sep 30, 2020',
+      '$196.69',
+      'R',
+      'Account# 123-456-789',
+      'To donate to SHARE, please add $1, $2 or $5 to your payment',
+      'Make Check Payable To',
+      '0053300',
+      'ASDF ZXCV',
+      'PO BOX 80062',
+      '1234 /FAKE ST APT 120',
+      'PRESCOTT AZ 86304-8062',
+      'PHOENIX AZ 85051-9605',
+      '200909000',
+      '83252800400000000000000000000000196691',
+      'R',
+      'Please Pay by',
+      'Account# 123-456-789',
+      'Sep 30, 2020',
+      '$196.69',
+      'srpnet.com',
+      '602-236-8888',
+      'SERVICE FROM 8/5/2020 - 9/4/2020 (31 Days)',
+      'ASDF ZXCV',
+      'YOUR ACCOUNT SUMMARY AS OF 9/9/2020',
+      '1234 WFAKE ST AP 120 PHOENIX',
+      'Previous Balance',
+      '$180.47',
+      'Basic Plan',
+      '8/18 Payment - Thank you',
+      '-$181.00',
+      'Balance Before Charges',
+      '-$0.53',
+      'ENERGY HISTORY (kWh)',
+      'Monthly Service Charge',
+      '$20.00',
+      'Energy Charge',
+      '$160.93',
+      '1,540',
+      'Phoenix City Tax',
+      '$4.89',
+      '1,320',
+      '1,100',
+      'County and State Tax',
+      '$11.40',
+      '880',
+      'This Month\'s Charges',
+      '$197.22',
+      '660',
+      'PLEASE PAY',
+      '$196.69',
+      '440',
+      '220',
+      '0',
+      'MESSAGES FOR YOU',
+      'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec',
+      'If you are having trouble paying your bill, act now, we',
+      '2018',
+      '2019',
+      '2020',
+      'have programs and resources that may help you. Our',
+      'team is available 24/7 at (602) 236-8888 or visit',
+      'srpnet.com/heretohelp.',
+      'You would have saved $3.85 this month on the EZ-3 Plan.',
+      'Savings for the last 12 months would have been $7.31.',
+      'COMPARISON (Daily Averages)',
+      'Days',
+      'kWh',
+      'Cost',
+      'Temp',
+      'Sep 2020',
+      '31',
+      '48',
+      '$6.36',
+      '97.7°',
+      'Aug 2020',
+      '31',
+      '41',
+      '$5.83',
+      '99.0°',
+      'Meter #',
+      'Type',
+      'Current Read',
+      'Prior Read',
+      'Energy',
+      '5684647',
+      'kWh',
+      '29381',
+      '27906',
+      '1,475',
+    ],
+  };
+
+  // The Arizona Driver License processor should return true
+  expect(processor.matcher(ocr.keyValues, ocr.rawText)).toBe(true);
+
+  const processedDocument = processDocument(ocr.keyValues, ocr.rawText);
+  expect(processedDocument.documentType).toBe('SRP');
+  expect(processedDocument.extracted.first_name).toBe('ASDF');
+  expect(processedDocument.extracted.last_name).toBe('ZXCV');
+  expect(processedDocument.extracted.street_address_line_1).toBe(undefined);
+  expect(processedDocument.extracted.street_address_line_2).toBe(undefined);
+  expect(processedDocument.extracted.city).toBe(undefined);
+  expect(processedDocument.extracted.state).toBe(undefined);
+  expect(processedDocument.extracted.zip_code).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe(undefined);
+  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+  expect(processedDocument.extracted.bill_amount).toBe(undefined);
+  expect(processedDocument.extracted.bill_date).toBe(undefined);
+  expect(processedDocument.extracted.account_number).toBe('123-456-789');
+});
+
 it('Expect SRP bill to be detected and processed', async () => {
   const ocr = {
     keyValues: {

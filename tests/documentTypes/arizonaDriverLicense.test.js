@@ -726,13 +726,13 @@ it('document ocr id 299', async () => {
       'NOT FOR FEDERAL IDENTIFICATION',
       'LIMITED-TERM',
       '9 CEASS/D',
-      '4d DLN X84015795',
+      '4d DLN X12345678',
       '9a END NONE',
       '12 REST NONE',
       '3 boe 03/08/1986',
-      '1 DARIEN',
-      '2 HAMLET FARAD',
-      '8 6189 W DOORTON DR',
+      '1 ASDF',
+      '2 ZXCV QWER',
+      '8 1234 W FAKE DR',
       'APT 820',
       'PHOENIX. AZ Z850292660',
       '4b',
@@ -743,7 +743,7 @@ it('document ocr id 299', async () => {
       '16 HGT 5-04" 19 HAIR BRO',
       '17 WGT 150 IB',
       '03/08/86',
-      '5 DD 02804315ZX13805',
+      '5 DD 12345678ZX12345',
     ],
   };
 
@@ -751,14 +751,215 @@ it('document ocr id 299', async () => {
 
   const processedDocument = processDocument(ocr.keyValues, ocr.rawText);
   expect(processedDocument.documentType).toBe('Arizona\'s Driver License');
-  expect(processedDocument.extracted.last_name).toBe('DARIEN');
-  expect(processedDocument.extracted.first_name).toBe('HAMLET FARAD');
-  expect(processedDocument.extracted.street_address_line_1).toBe('6189 W DOORTON DR');
+  expect(processedDocument.extracted.last_name).toBe('ASDF');
+  expect(processedDocument.extracted.first_name).toBe('ZXCV QWER');
+  expect(processedDocument.extracted.street_address_line_1).toBe('1234 W FAKE DR');
   expect(processedDocument.extracted.street_address_line_2).toBe('APT 820');
   expect(processedDocument.extracted.city).toBe(undefined);
   expect(processedDocument.extracted.state).toBe(undefined);
   expect(processedDocument.extracted.zip_code).toBe(undefined);
   expect(processedDocument.extracted.issued_date).toBe(undefined);
+  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+
+  expect(processedDocument.extracted.bill_amount).toBe(undefined);
+  expect(processedDocument.extracted.bill_date).toBe(undefined);
+  expect(processedDocument.extracted.account_number).toBe(undefined);
+});
+
+it('document ocr id 310', async () => {
+  const ocr = {
+    keyValues: {
+      '46 EXP ': '07/21/2021 ',
+    },
+    rawText: [
+      'DRIVER LICENSE',
+      'USA',
+      'NOT FOR FEDERAL IDENTIFICATION',
+      'LIMITED-TERM',
+      '9 CLASS D',
+      '4d DLN D12345678',
+      '9a END NONE',
+      '12 REST NONE',
+      'DOB 01/01/1996',
+      '1 ASDF ZXCV',
+      '2 QWER DFG SDGG',
+      '8 1234 N fake AVE',
+      'APT 2114 BLDG 2',
+      'PHOENIX, AZ 850354238',
+      '46 EXP 07/21/2021 4a ISS 04/27/2020',
+      '15 SEX M',
+      '18 EYES BRO',
+      '16 HGT 5-07" 19 HAIR BLK',
+      '17 WGT 140 lb',
+      '01/01/96',
+      '5 DD 12345678F1234567',
+    ],
+  };
+
+  // The Arizona Driver License processor should return true
+  expect(processor.matcher(ocr.keyValues, ocr.rawText)).toBe(true);
+
+  const processedDocument = processDocument(ocr.keyValues, ocr.rawText);
+  expect(processedDocument.documentType).toBe('Arizona\'s Driver License');
+  expect(processedDocument.extracted.first_name).toBe('QWER DFG SDGG');
+  expect(processedDocument.extracted.last_name).toBe('ASDF ZXCV');
+  expect(processedDocument.extracted.street_address_line_1).toBe('1234 N fake AVE');
+  expect(processedDocument.extracted.street_address_line_2).toBe('APT 2114 BLDG 2');
+  expect(processedDocument.extracted.city).toBe('PHOENIX');
+  expect(processedDocument.extracted.state).toBe('AZ');
+  expect(processedDocument.extracted.zip_code).toBe('850354238');
+  expect(processedDocument.extracted.issued_date).toBe('04/27/2020');
+  expect(processedDocument.extracted.expiration_date).toBe('07/21/2021');
+
+  expect(processedDocument.extracted.bill_amount).toBe(undefined);
+  expect(processedDocument.extracted.bill_date).toBe(undefined);
+  expect(processedDocument.extracted.account_number).toBe(undefined);
+});
+
+it('document ocr id 322', async () => {
+  const ocr = {
+    keyValues: {
+      '9a END ': 'NONE ',
+    },
+    rawText: [
+      'DRIVER LICENSE',
+      'USA',
+      '9EE LCLASS D',
+      '-IMITED-TERM',
+      '9a END 12\'REST NONE NONE',
+      'WDLN D12345678',
+      'a',
+      'DOB 01/01/1973',
+      '8 2 I 3848 ASDF ZXCV w WERT DFGH VCX',
+      'PHOENIX) AZ850191735 AVE',
+      'ROVEY',
+      '4n EXP 05/09/2027',
+      'is sex',
+      '4alss 08/26/2020',
+      '16 HGT M 19 18 HAIR EYES BLK BRO',
+      'N17 WGT 140 lb',
+      '16 fod 123456789A015005',
+      '01/01/73',
+    ],
+  };
+
+  // The Arizona Driver License processor should return true
+  expect(processor.matcher(ocr.keyValues, ocr.rawText)).toBe(true);
+
+  const processedDocument = processDocument(ocr.keyValues, ocr.rawText);
+  expect(processedDocument.documentType).toBe('Arizona\'s Driver License');
+  expect(processedDocument.extracted.first_name).toBe(undefined);
+  expect(processedDocument.extracted.last_name).toBe(undefined);
+  expect(processedDocument.extracted.street_address_line_1).toBe('2 I 3848 ASDF ZXCV w WERT DFGH VCX');
+  expect(processedDocument.extracted.street_address_line_2).toBe('PHOENIX) AZ850191735 AVE');
+  expect(processedDocument.extracted.city).toBe(undefined);
+  expect(processedDocument.extracted.state).toBe(undefined);
+  expect(processedDocument.extracted.zip_code).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe(undefined);
+  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+
+  expect(processedDocument.extracted.bill_amount).toBe(undefined);
+  expect(processedDocument.extracted.bill_date).toBe(undefined);
+  expect(processedDocument.extracted.account_number).toBe(undefined);
+});
+
+it('document ocr id 395', async () => {
+  const ocr = {
+    keyValues: {
+      '5-DD 40 1016MV6 10A2017M2 17M2 ': '',
+    },
+    rawText: [
+      'DRIVER LICENSE',
+      'USA',
+      'NOT FOR FEDERAL IDEN IFICATION',
+      'LIMITED-TERM',
+      'GLASS',
+      'DEN D12345678',
+      'NONE',
+      'RESTRNONE',
+      'DOB 05/04/1984',
+      'ASDF',
+      'ZXCV>DFSGSADFG',
+      '1234 W FAKE',
+      'PHOENIX AZ85051-3842',
+      'EXP 02/27/2028 alss 10/02/2018',
+      'SEX M',
+      'BRO',
+      '6:00: 19 HAIR BLK',
+      '17 WGT 170 1b',
+      '05/04/84',
+      '5-DD 40 1016MV6 10A2017M2 17M2',
+      'GLASS D',
+      'ENDORSEMENTS?',
+      'RESTRICTIONS',
+      'Change You Must of Report Address a',
+      'Within to Days',
+      '05/04/1984',
+      '18275AZ01 1234567890',
+      '=',
+    ],
+  };
+
+  // The Arizona Driver License processor should return true
+  expect(processor.matcher(ocr.keyValues, ocr.rawText)).toBe(true);
+
+  const processedDocument = processDocument(ocr.keyValues, ocr.rawText);
+  expect(processedDocument.documentType).toBe('Arizona\'s Driver License');
+  expect(processedDocument.extracted.first_name).toBe(undefined);
+  expect(processedDocument.extracted.last_name).toBe(undefined);
+  expect(processedDocument.extracted.street_address_line_1).toBe(undefined);
+  expect(processedDocument.extracted.street_address_line_2).toBe('DRIVER LICENSE');
+  expect(processedDocument.extracted.city).toBe(undefined);
+  expect(processedDocument.extracted.state).toBe(undefined);
+  expect(processedDocument.extracted.zip_code).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe(undefined);
+  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+
+  expect(processedDocument.extracted.bill_amount).toBe(undefined);
+  expect(processedDocument.extracted.bill_date).toBe(undefined);
+  expect(processedDocument.extracted.account_number).toBe(undefined);
+});
+
+it('document ocr id 396', async () => {
+  const ocr = {
+    keyValues: {
+      '12 REST ': 'NONE ',
+      'END ': 'NONE ',
+    },
+    rawText: [
+      'USA',
+      'DRIVER LICENSE',
+      'NOT FOR FEDERAL IDENTIFICATION LIMITED-TERM',
+      'CLASS D',
+      '4d DLN D12345678',
+      '9a 9 END NONE',
+      'DOB 10/02/1990',
+      '12 REST NONE',
+      '13 2 8 ALI ZXCV 4001 FAKE, E MCDOWELL XCVB AZ Z 85008-4446 85008 RD 4446 APT 123',
+      '06/22/2026 4a ISS 12/17/2019',
+      'EXP',
+      '4b is 16 SEX HGT F',
+      '5-03" is 19 EYES HAIR BRO BLK',
+      '17 WGT 158 1b',
+      '10/02/90',
+      '13',
+      '>> 6 DD 4016MV 1234MV123A1234M0 12A1234M0',
+    ],
+  };
+
+  // The Arizona Driver License processor should return true
+  expect(processor.matcher(ocr.keyValues, ocr.rawText)).toBe(true);
+
+  const processedDocument = processDocument(ocr.keyValues, ocr.rawText);
+  expect(processedDocument.documentType).toBe('Arizona\'s Driver License');
+  expect(processedDocument.extracted.first_name).toBe(undefined);
+  expect(processedDocument.extracted.last_name).toBe(undefined);
+  expect(processedDocument.extracted.street_address_line_1).toBe(undefined);
+  expect(processedDocument.extracted.street_address_line_2).toBe('USA');
+  expect(processedDocument.extracted.city).toBe(undefined);
+  expect(processedDocument.extracted.state).toBe(undefined);
+  expect(processedDocument.extracted.zip_code).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe('06/22/2026');
   expect(processedDocument.extracted.expiration_date).toBe(undefined);
 
   expect(processedDocument.extracted.bill_amount).toBe(undefined);
