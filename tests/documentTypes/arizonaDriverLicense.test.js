@@ -555,8 +555,8 @@ it('document ocr id 223', async () => {
   expect(processedDocument.extracted.city).toBe('PHOENIX');
   expect(processedDocument.extracted.state).toBe('AZ');
   expect(processedDocument.extracted.zip_code).toBe('1850219316');
-  expect(processedDocument.extracted.issued_date).toBe('12/16/2022');
-  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe('06/05/2020');
+  expect(processedDocument.extracted.expiration_date).toBe('12/16/2022');
 
   expect(processedDocument.extracted.bill_amount).toBe(undefined);
   expect(processedDocument.extracted.bill_date).toBe(undefined);
@@ -708,8 +708,8 @@ it('document ocr id 287', async () => {
   expect(processedDocument.extracted.city).toBe('PHOENIX');
   expect(processedDocument.extracted.state).toBe('AZ');
   expect(processedDocument.extracted.zip_code).toBe('85008-6455');
-  expect(processedDocument.extracted.issued_date).toBe(undefined);
-  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe('02/01/2017');
+  expect(processedDocument.extracted.expiration_date).toBe('01/01/2036');
 
   expect(processedDocument.extracted.bill_amount).toBe(undefined);
   expect(processedDocument.extracted.bill_date).toBe(undefined);
@@ -855,8 +855,8 @@ it('document ocr id 322', async () => {
   expect(processedDocument.extracted.city).toBe(undefined);
   expect(processedDocument.extracted.state).toBe(undefined);
   expect(processedDocument.extracted.zip_code).toBe(undefined);
-  expect(processedDocument.extracted.issued_date).toBe(undefined);
-  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe('08/26/2020');
+  expect(processedDocument.extracted.expiration_date).toBe('05/09/2027');
 
   expect(processedDocument.extracted.bill_amount).toBe(undefined);
   expect(processedDocument.extracted.bill_date).toBe(undefined);
@@ -959,8 +959,8 @@ it('document ocr id 396', async () => {
   expect(processedDocument.extracted.city).toBe(undefined);
   expect(processedDocument.extracted.state).toBe(undefined);
   expect(processedDocument.extracted.zip_code).toBe(undefined);
-  expect(processedDocument.extracted.issued_date).toBe('06/22/2026');
-  expect(processedDocument.extracted.expiration_date).toBe(undefined);
+  expect(processedDocument.extracted.issued_date).toBe('12/17/2019');
+  expect(processedDocument.extracted.expiration_date).toBe('06/22/2026');
 
   expect(processedDocument.extracted.bill_amount).toBe(undefined);
   expect(processedDocument.extracted.bill_date).toBe(undefined);
